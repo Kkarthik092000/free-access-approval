@@ -17,17 +17,17 @@ def log(msg):
 def run():
     approved_count = 0
 
-    # STEP 1: LOGIN PAGE
+    # LOGIN PAGE
     log("Opening login page...")
     login_page = session.get(LOGIN_URL)
 
     soup = BeautifulSoup(login_page.text, "html.parser")
-    form_token = soup.find("input", {"name": "authenticity_token"})["value"]
+    token = soup.find("input", {"name": "authenticity_token"})["value"]
 
-    # STEP 2: LOGIN
+    # LOGIN
     log("Logging in...")
     payload = {
-        "authenticity_token": form_token,
+        "authenticity_token": token,
         "user[email]": EMAIL,
         "user[password]": PASSWORD
     }
@@ -40,11 +40,11 @@ def run():
     session.post(LOGIN_URL, data=payload, headers=headers)
     log("Logged in")
 
-    # STEP 3: LOAD DATA PAGE
+    # LOAD DATA PAGE
     page = session.get(DATA_URL)
     soup = BeautifulSoup(page.text, "html.parser")
 
-    meta_token = soup.find("meta", {"name": "csrf-token"})["content"]
+    csrf_token = soup.find("meta", {"name": "csrf-token"})["content"]
 
     rows = soup.select("table tbody tr")
 
@@ -69,7 +69,7 @@ def run():
                     "User-Agent": "Mozilla/5.0",
                     "Referer": DATA_URL,
                     "Origin": BASE_URL,
-                    "X-CSRF-Token": meta_token,
+                    "X-CSRF-Token": csrf_token,
                     "X-Requested-With": "XMLHttpRequest"
                 }
 
