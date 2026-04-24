@@ -3,7 +3,7 @@ name: Auto Approve Free Transactions
 on:
   workflow_dispatch:   # manual run
   schedule:
-    - cron: "*/5 * * * *"   # every 5 minutes
+    - cron: "*/3 * * * *"   # every 3 minutes
 
 jobs:
   run-script:
